@@ -1,5 +1,5 @@
 import { GetStaticPaths, GetStaticProps } from 'next';
-
+import Prismic from '@prismicio/client';
 import { getPrismicClient } from '../../services/prismic';
 
 import commonStyles from '../../styles/common.module.scss';
@@ -26,20 +26,44 @@ interface PostProps {
   post: Post;
 }
 
-// export default function Post() {
-//   // TODO
-// }
+export default function Post({ post }: PostProps): JSX.Element {
+  return (
+    <div>
+      <div>{JSON.stringify(post)}</div>
+    </div>
+  );
+}
 
-// export const getStaticPaths = async () => {
-//   const prismic = getPrismicClient();
-//   const posts = await prismic.query(TODO);
+export const getStaticPaths: GetStaticPaths = async () => {
+  const prismic = getPrismicClient();
+  const posts = await prismic.query(
+    Prismic.Predicates.at('document.type', 'posts'),
+    {
+      fetch: [
+        'posts.title',
+        'posts.subtitle',
+        'posts.author',
+        'posts.banner',
+        'posts.content',
+      ],
+    }
+  );
 
-//   // TODO
-// };
+  return {
+    paths: [],
+    fallback: 'blocking',
+  };
+};
 
-// export const getStaticProps = async context => {
-//   const prismic = getPrismicClient();
-//   const response = await prismic.getByUID(TODO);
+export const getStaticProps: GetStaticProps = async context => {
+  const { params } = context;
+  const prismic = getPrismicClient();
+  const response = await prismic.getByUID('posts', String(params.slug), {});
 
-//   // TODO
-// };
+  return {
+    props: {
+      post: response,
+    },
+    redirect: 60 * 60 * 1, // 1 hour
+  };
+};
