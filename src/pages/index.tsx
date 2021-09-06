@@ -3,11 +3,11 @@ import Prismic from '@prismicio/client';
 import Head from 'next/head';
 import Link from 'next/link';
 import { useState } from 'react';
+import { FiCalendar, FiUser } from 'react-icons/fi';
 import { getPrismicClient } from '../services/prismic';
 
 import commonStyles from '../styles/common.module.scss';
 import styles from './home.module.scss';
-import Header from '../components/Header';
 import formatter from '../utils/formatter';
 
 interface Post {
@@ -43,28 +43,37 @@ export default function Home({ postsPagination }: HomeProps): JSX.Element {
       <Head>
         <title>Spacetraveling</title>
       </Head>
-      <main>
-        <Header />
-        <div>
+      <main className={commonStyles.container}>
+        <div className={styles.content}>
           <ul>
             {posts.map(post => (
               <li key={post.uid}>
                 <Link href={`/post/${post.uid}`}>
                   <a>
-                    <div>
-                      {formatter(new Date(post.first_publication_date))}
+                    <h2>{post.data.title}</h2>
+                    <p>{post.data.subtitle}</p>
+                    <div className={styles.infoContainer}>
+                      <div className={commonStyles.info}>
+                        <FiCalendar className={commonStyles.icon} />
+                        <p className={commonStyles.infoText}>
+                          {formatter(new Date(post.first_publication_date))}
+                        </p>
+                      </div>
+                      <div className={commonStyles.info}>
+                        <FiUser className={commonStyles.icon} />
+                        <p className={commonStyles.infoText}>
+                          {post.data.author}
+                        </p>
+                      </div>
                     </div>
-                    <div>{post.data.author}</div>
-                    <div>{post.data.subtitle}</div>
-                    <div>{post.data.title}</div>
                   </a>
                 </Link>
               </li>
             ))}
           </ul>
           {postsPagination.next_page && (
-            <button type="button" onClick={loadMore}>
-              Carregar mais posts
+            <button className={styles.button} type="button" onClick={loadMore}>
+              <span>Carregar mais posts</span>
             </button>
           )}
         </div>

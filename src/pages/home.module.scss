@@ -1,1 +1,23 @@
 // TODO
+.content {
+  h2 {
+    margin-bottom: 1rem;
+  }
+  ul {
+    list-style-type: none;
+  }
+  li {
+    margin-bottom: 2rem;
+  }
+}
+
+.infoContainer {
+  display: flex;
+}
+
+.button {
+  margin-top: 1rem;
+  background: transparent;
+  border: none;
+  font-size: 1.125rem;
+}
