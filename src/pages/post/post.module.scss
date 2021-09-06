@@ -6,3 +6,32 @@
 .textContent {
   margin-top: 2rem;
 }
+
+.edited {
+  margin-bottom: 1rem;
+  font-style: italic;
+}
+
+.utterances {
+  margin-top: 5rem;
+}
+
+.button {
+  margin-top: 1rem;
+  background: transparent;
+  border: none;
+  font-size: 1.125rem;
+}
+
+.additionalPosts {
+  border-top: 1px solid var(--body);
+  margin-top: 3rem;
+  padding: 1rem 0;
+  display: flex;
+  justify-content: space-between;
+}
+
+.additionalPostTitle {
+  font-size: 1.3rem;
+  color: var(--heading);
+}
