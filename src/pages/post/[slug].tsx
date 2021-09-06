@@ -3,6 +3,8 @@ import Prismic from '@prismicio/client';
 import { useRouter } from 'next/router';
 import { RichText } from 'prismic-dom';
 import { useCallback, useEffect, useState } from 'react';
+import Head from 'next/head';
+import { FiCalendar, FiUser, FiClock } from 'react-icons/fi';
 import { getPrismicClient } from '../../services/prismic';
 
 import commonStyles from '../../styles/common.module.scss';
@@ -40,7 +42,7 @@ export default function Post({ post }: PostProps): JSX.Element {
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const getReadingTime = useCallback(() => {
-    // ammend the whole text into one
+    // amend the whole text into one
     const text = post.data.content.reduce((acc, cont) => {
       return `${acc} ${RichText.asText(cont.body)}`;
     }, '');
@@ -56,15 +58,40 @@ export default function Post({ post }: PostProps): JSX.Element {
 
   return (
     <div>
-      <div>{post.data.title}</div>
-      <div>{formatter(new Date(post.first_publication_date))}</div>
-      <div>{post.data.author}</div>
-      <div>{post.data.banner.url}</div>
-      <div>{post.data.content[0].heading}</div>
-      <div>{post.data.content[1].heading}</div>
-      <div>{RichText.asText(post.data.content[0].body)}</div>
-      <div>{RichText.asText(post.data.content[1].body)}</div>
-      <div>{`${readingTime} min`}</div>
+      <Head>
+        <title>{post.data.title}</title>
+      </Head>
+      <main className={commonStyles.container}>
+        <img src={post.data.banner.url} alt={post.data.title} />
+        <h1>{post.data.title}</h1>
+        <div className={styles.infoContainer}>
+          <div className={commonStyles.info}>
+            <FiCalendar className={commonStyles.icon} />
+            <p className={commonStyles.infoText}>
+              {formatter(new Date(post.first_publication_date))}
+            </p>
+          </div>
+          <div className={commonStyles.info}>
+            <FiUser className={commonStyles.icon} />
+            <p className={commonStyles.infoText}>{post.data.author}</p>
+          </div>
+          <div className={commonStyles.info}>
+            <FiClock className={commonStyles.icon} />
+            <p className={commonStyles.infoText}>{`${readingTime} min`}</p>
+          </div>
+        </div>
+        {post.data.content.map(content => (
+          <div className={styles.textContent} key={content.heading}>
+            <h2>{content.heading}</h2>
+            <div
+              // eslint-disable-next-line react/no-danger
+              dangerouslySetInnerHTML={{
+                __html: RichText.asHtml(content.body),
+              }}
+            />
+          </div>
+        ))}
+      </main>
     </div>
   );
 }
